@@ -11,12 +11,12 @@ class UserAdmin(BaseUserAdmin):
         (_('Personal Info'), {'fields': ('first_name', 'last_name')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login',)}),
-        (_('Role Info'), {'fields': ('role', 'supervisor')}),
+        (_('Role Info'), {'fields': ('role', )}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2', 'first_name', 'last_name', 'role', 'supervisor'),
+            'fields': ('email', 'password1', 'password2', 'first_name', 'last_name', 'role'),
         }),
     )
     search_fields = ('email', 'first_name', 'last_name')
