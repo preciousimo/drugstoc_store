@@ -26,6 +26,8 @@ CSRF_TRUSTED_ORIGINS = ['https://drugstoc-store.onrender.com']
 
 # Application definition
 
+AUTH_USER_MODEL = 'users.User'
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -84,6 +86,8 @@ INSTALLED_APPS = [
     
     'corsheaders',
     'drf_yasg',
+    
+    'users',
 ]
 
 MIDDLEWARE = [
