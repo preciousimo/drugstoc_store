@@ -8,10 +8,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Authentication URL patterns
-    path('auth/register/', UserViewSet.as_view({'post': 'register'}), name='register'),  # Register a new user
-    path('auth/login/', CustomTokenObtainPairView.as_view(), name='token_obtain'),  # Obtain a token for a user
-    path('auth/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),  # Refresh a token for a user
-    path('auth/logout/', logout_view, name='logout'),
+    path('api/register/', UserViewSet.as_view({'post': 'register'}), name='register'),  # Register a new user
+    path('api/login/', CustomTokenObtainPairView.as_view(), name='token_obtain'),  # Obtain a token for a user
+    path('api/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),  # Refresh a token for a user
+    path('api/logout/', logout_view, name='logout'),
 
     # Other app URL patterns
     path('api/', include('users.urls')),
