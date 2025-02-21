@@ -64,25 +64,33 @@ def low_stock_report(request):
 @permission_classes([IsAdmin])
 def sales_report(request):
     period = request.query_params.get('period', 'day')
-    trunc_func = {
-        'week': TruncWeek('created_at'),
-        'month': TruncMonth('created_at'),
-    }.get(period, TruncDate('created_at'))
-
-    sales_by_period = (
-        OrderItem.objects
-        .filter(order__status='completed')
-        .annotate(period=trunc_func)
-        .values('period')
-        .annotate(
-            total_sales=Sum(F('price_at_order') * F('quantity')),
-            order_count=Count('order', distinct=True),
-            units_sold=Sum('quantity')
-        )
-        .order_by('period')
-    )
-
+    
+    # Define the truncation function based on the period
+    if period == 'week':
+        trunc_func = TruncWeek('order__created_at')
+    elif period == 'month':
+        trunc_func = TruncMonth('order__created_at')
+    else:  # default to day
+        trunc_func = TruncDate('order__created_at')
+    
+    # Only consider completed orders
+    completed_orders = Order.objects.filter(status='completed')
+    
+    # Get all order items from completed orders
+    order_items = OrderItem.objects.filter(order__in=completed_orders)
+    
+    # Aggregate sales by period
+    sales_by_period = order_items.annotate(
+        period=trunc_func
+    ).values(
+        'period'
+    ).annotate(
+        total_sales=Sum(F('price_at_order') * F('quantity')),
+        order_count=Count('order', distinct=True),
+        units_sold=Sum('quantity')
+    ).order_by('period')
+    
     return Response({
         'period': period,
-        'data': list(sales_by_period)
+        'data': sales_by_period
     })
