@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=1
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    restart: unless-stopped
+
+  # Add this service to create a superuser during initial setup
+  setup:
+    build: .
+    volumes:
+      - .:/app
+    entrypoint: >
+      sh -c "
+        python manage.py migrate &&
+        python manage.py shell -c \"
+          from django.contrib.auth.models import User;
+          User.objects.filter(username='admin').exists() or 
+          User.objects.create_superuser('admin', 'admin@example.com', 'adminpass')
+        \"
+      "
+    depends_on:
+      - web
