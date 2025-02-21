@@ -1,7 +1,7 @@
 from rest_framework import permissions
 from django.contrib import admin
 from django.urls import path, include, re_path
-from users.views import UserViewSet, CustomTokenObtainPairView, CustomTokenRefreshView
+from users.views import UserViewSet, CustomTokenObtainPairView, CustomTokenRefreshView, logout_view
 
 urlpatterns = [
     # Admin URL patterns
@@ -11,6 +11,7 @@ urlpatterns = [
     path('auth/register/', UserViewSet.as_view({'post': 'register'}), name='register'),  # Register a new user
     path('auth/login/', CustomTokenObtainPairView.as_view(), name='token_obtain'),  # Obtain a token for a user
     path('auth/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),  # Refresh a token for a user
+    path('auth/logout/', logout_view, name='logout'),
 
     # Other app URL patterns
     path('api/', include('users.urls')),
