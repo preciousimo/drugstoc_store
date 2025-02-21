@@ -14,7 +14,6 @@ from django.db.models.signals import post_save
 
 from users.models import User
 from users.serializers import UserSerializer
-from users.permissions import IsSuperAdmin
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from drugstoc_store.serializers import CustomTokenObtainPairSerializer, CustomTokenRefreshSerializer
 

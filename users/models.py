@@ -6,7 +6,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = (
         ('user', 'User'),
         ('admin', 'Admin'),
-        ('super_admin', 'Super Admin') 
     )
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=30)
@@ -31,6 +30,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def role_display(self):
         return dict(self.ROLE_CHOICES).get(self.role, 'Unknown')
+    
+    @property
+    def is_admin(self):
+        return self.role == 'admin'
 
     def activate_user(self):
         self.is_active = True

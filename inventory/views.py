@@ -4,24 +4,18 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import Sum, F, Count
 from django.db.models.functions import TruncDate, TruncWeek, TruncMonth
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
 from .models import Product, Order, OrderItem
 from .serializers import (
     ProductSerializer, OrderSerializer, 
-    OrderStatusUpdateSerializer
+    OrderStatusUpdateSerializer, OrderItemSerializer
 )
 from users.permissions import IsAdmin, IsUser
-
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     
     def get_permissions(self):
-        """
-        Regular users can list and retrieve products but not modify
-        """
         if self.action in ['list', 'retrieve']:
             permission_classes = [permissions.IsAuthenticated]
         else:
@@ -31,26 +25,33 @@ class ProductViewSet(viewsets.ModelViewSet):
 class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
     permission_classes = [permissions.IsAuthenticated, IsUser]
-    
+
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff:
+        if user.is_staff or user.is_admin:
             return Order.objects.all()
         return Order.objects.filter(user=user)
-    
+
     def perform_create(self, serializer):
+        # Automatically set the user to the authenticated user
         serializer.save(user=self.request.user)
 
 class UpdateOrderStatusView(generics.UpdateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderStatusUpdateSerializer
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [IsAdmin]
 
 @api_view(['GET'])
-@permission_classes([permissions.IsAdminUser])
+@permission_classes([IsAdmin])
 def low_stock_report(request):
-    """API endpoint to generate report of products with low stock"""
-    threshold = request.query_params.get('threshold', 10)
+    threshold = int(request.query_params.get('threshold', '10'))
+    try:
+        threshold = int(threshold)
+        if threshold <= 0:
+            raise ValueError()
+    except ValueError:
+        return Response({"error": "Threshold must be a positive integer."}, status=status.HTTP_400_BAD_REQUEST)
+
     low_stock_products = Product.objects.filter(quantity__lt=threshold)
     serializer = ProductSerializer(low_stock_products, many=True)
     return Response({
@@ -60,38 +61,28 @@ def low_stock_report(request):
     })
 
 @api_view(['GET'])
-@permission_classes([permissions.IsAdminUser])
+@permission_classes([IsAdmin])
 def sales_report(request):
-    """API endpoint to generate sales report by time period"""
-    
     period = request.query_params.get('period', 'day')
-    
-    # Define the truncation function based on the period
-    if period == 'week':
-        trunc_func = TruncWeek('created_at')
-    elif period == 'month':
-        trunc_func = TruncMonth('created_at')
-    else:  # default to day
-        trunc_func = TruncDate('created_at')
-    
-    # Only consider completed orders
-    completed_orders = Order.objects.filter(status='completed')
-    
-    # Get all order items from completed orders
-    order_items = OrderItem.objects.filter(order__in=completed_orders)
-    
-    # Aggregate sales by period
-    sales_by_period = order_items.annotate(
-        period=trunc_func
-    ).values(
-        'period'
-    ).annotate(
-        total_sales=Sum(F('price_at_order') * F('quantity')),
-        order_count=Count('order', distinct=True),
-        units_sold=Sum('quantity')
-    ).order_by('period')
-    
+    trunc_func = {
+        'week': TruncWeek('created_at'),
+        'month': TruncMonth('created_at'),
+    }.get(period, TruncDate('created_at'))
+
+    sales_by_period = (
+        OrderItem.objects
+        .filter(order__status='completed')
+        .annotate(period=trunc_func)
+        .values('period')
+        .annotate(
+            total_sales=Sum(F('price_at_order') * F('quantity')),
+            order_count=Count('order', distinct=True),
+            units_sold=Sum('quantity')
+        )
+        .order_by('period')
+    )
+
     return Response({
         'period': period,
-        'data': sales_by_period
+        'data': list(sales_by_period)
     })
