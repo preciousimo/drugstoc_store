@@ -1,9 +1,12 @@
 from rest_framework import permissions
 from django.contrib import admin
 from django.urls import path, include, re_path
+from . import views
 from users.views import UserViewSet, CustomTokenObtainPairView, CustomTokenRefreshView, logout_view
 
 urlpatterns = [
+    path('', views.landing_page, name='landing_page'),
+    
     # Admin URL patterns
     path('admin/', admin.site.urls),
 
