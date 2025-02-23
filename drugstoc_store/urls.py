@@ -6,6 +6,7 @@ from users.views import UserViewSet, CustomTokenObtainPairView, CustomTokenRefre
 
 urlpatterns = [
     path('', views.landing_page, name='landing_page'),
+    path('api/', views.redirect_to_landing, name='redirect_to_landing'),
     
     # Admin URL patterns
     path('admin/', admin.site.urls),
