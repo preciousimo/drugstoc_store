@@ -145,3 +145,17 @@ python manage.py test
 ```bash
 docker-compose exec web python manage.py test
 ```
+
+## App Preview :
+
+<table width="100%"> 
+<tr>
+<td width="100%">      
+&nbsp; 
+<br>
+<p align="center">
+  Inbox Reply
+</p>
+<img width="1428" alt="Screenshot 2025-02-23 at 6 18 20 PM" src="https://github.com/user-attachments/assets/212a6efc-53da-4dfc-b4b5-c9c70187cf47" />
+</td> 
+</table>
