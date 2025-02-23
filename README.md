@@ -111,22 +111,22 @@ A Django-based inventory management system with RESTful API endpoints for managi
 ## API Endpoints
 
 ### Authentication
-- `POST /api/register/` - Register a new user
-- `POST /api/login/` - Login and get session
-- `POST /api/logout/` - Logout and clear session
+- `POST /api/register` - Register a new user
+- `POST /api/login` - Login and get session
+- `POST /api/logout` - Logout and clear session
 
 ### Users
 - `GET /api/users` - List all users (admin only)
 - `GET/PUT/DELETE /api/user/{id}/` - Get, update, or delete user (admin only)
 
 ### Products
-- `GET /api/products` - List all products (all authenticated users)
-- `POST /api/products` - Create new product (admin only)
+- `GET /api/products/` - List all products (all authenticated users)
+- `POST /api/products/` - Create new product (admin only)
 - `GET/PUT/DELETE /api/product/{id}/` - Get, update, or delete product
 
 ### Orders
-- `GET /api/orders` - List orders (users see their own, admins see all)
-- `POST /api/orders` - Create new order
+- `GET /api/orders/` - List orders (users see their own, admins see all)
+- `POST /api/orders/` - Create new order
 - `GET /api/order/{id}/` - Get order details
 - `PATCH /api/order/{id}/status/` - Update order status (admin only)
 
@@ -154,7 +154,7 @@ docker-compose exec web python manage.py test
 &nbsp; 
 <br>
 <p align="center">
-  Inbox Reply
+  Landing Page
 </p>
 <img width="1428" alt="Screenshot 2025-02-23 at 6 18 20 PM" src="https://github.com/user-attachments/assets/212a6efc-53da-4dfc-b4b5-c9c70187cf47" />
 </td> 
