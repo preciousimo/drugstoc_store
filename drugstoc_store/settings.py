@@ -19,7 +19,7 @@ SECRET_KEY = str(os.getenv('SECRET_KEY'))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False if os.getenv('DJANGO_ENV') == 'production' else True
 
-ALLOWED_HOSTS = ['axon-1.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['drugstoc-store.onrender.com', 'localhost', '127.0.0.1']
 
 CSRF_TRUSTED_ORIGINS = ['https://drugstoc-store.onrender.com']
 
