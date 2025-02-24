@@ -1,0 +1,17 @@
+DJANGO_ENV = 'development'
+
+SECRET_KEY = 'django-insecure-d*6ee!7gt+dx)tsu0xajb%134vr72@_(42c#@xc2^f)jm65*fh'
+
+PGHOST='xxxxxxx'
+PGDATABASE='neondb'
+PGUSER='neondb_owner'
+PGPASSWORD='xxxxxxx'
+PGPORT=5432
+
+AWS_ACCESS_KEY_ID='xxxxxxxx'
+AWS_SECRET_ACCESS_KEY='xxxxxxx'
+AWS_STORAGE_BUCKET_NAME='xxxxxx'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'xxxxx'
+EMAIL_HOST_PASSWORD = 'xxxxx'
