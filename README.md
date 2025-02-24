@@ -110,6 +110,9 @@ A Django-based inventory management system with RESTful API endpoints for managi
 
 ## API Endpoints
 
+### Docs:
+https://documenter.getpostman.com/view/35036570/2sAYdbQZZ2
+
 ### Authentication
 - `POST /api/register` - Register a new user
 - `POST /api/login` - Login and get session
